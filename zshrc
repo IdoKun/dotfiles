@@ -70,12 +70,104 @@ export EDITOR=code
 
 # Set ipdb as the default Python debugger
 export PYTHONBREAKPOINT=ipdb.set_trace
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc' ]; then . '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc' ]; then . '/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'; fi
-export PYTHONPATH="/Users/thekunhome/code/IdoKun/data-challenges/04-Decision-Science:$PYTHONPATH"
+#export PYTHONPATH="/Users/thekunhome/code/IdoKun/data-challenges/04-Decision-Science:$PYTHONPATH"
 export GOOGLE_APPLICATION_CREDENTIALS="/Users/thekunhome/code/IdoKun/gcp/le-wagon-ds23021983-4919c49f7ae5.json"
 eval "$(direnv hook zsh)"
+export GOOGLE_APPLICATION_CREDENTIALS=/Users/thekunhome/Code/IdoKun/gcp/le-wagon-bootcamp-1014-6d370a9f44ca.json
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# The next line setup for le wagon Olist
+#export PYTHONPATH="/Users/thekunhome/Code/IdoKun/Le-Wagon/1945-DS-PT-Online-Ben/007-Olist/:$PYTHONPATH"
+#export PYTHONPATH="/Users/thekunhome/code/lewagon/04-Decision-Science/01-Project-Setup/data-context-and-setup:$PYTHONPATH"
+#Batch 2332 Berlin
+export PYTHONPATH="/Users/thekunhome/code/lewagon/03-Decision-Science:$PYTHONPATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/thekunhome/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/thekunhome/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/thekunhome/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/thekunhome/google-cloud-sdk/completion.zsh.inc'; fi
+
+export PATH="$HOME/google-cloud-sdk/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export GOOGLE_APPLICATION_CREDENTIALS=/Users/thekunhome/Code/IdoKun/gcp/le-wagon-bootcamp-475211-8588607da502.json
+
+
+# -----------------------------------------------------------------------------
+# AI-powered Git Commit Function
+# Copy paste this gist into your ~/.bashrc or ~/.zshrc to gain the `gcm` command. It:
+# 1) gets the current staged changed diff
+# 2) sends them to an LLM to write the git commit message
+# 3) allows you to easily accept, edit, regenerate, cancel
+# But - just read and edit the code however you like
+# the `llm` CLI util is awesome, can get it here: https://llm.datasette.io/en/stable/
+
+unalias gcm  # Remove the alias from oh-my-zsh's git plugin to avoid conflicts
+gcm() {
+    # Function to generate commit message
+    generate_commit_message() {
+        git diff --cached | llm "
+Below is a diff of all staged changes, coming from the command:
+\`\`\`
+git diff --cached
+\`\`\`
+Please generate a concise, one-line commit message for these changes."
+    }
+
+    # Function to read user input compatibly with both Bash and Zsh
+    read_input() {
+        if [ -n "$ZSH_VERSION" ]; then
+            echo -n "$1"
+            read -r REPLY
+        else
+            read -p "$1" -r REPLY
+        fi
+    }
+
+    # Main script
+    echo "Generating AI-powered commit message..."
+    commit_message=$(generate_commit_message)
+
+    while true; do
+        echo -e "\nProposed commit message:"
+        echo "$commit_message"
+
+        read_input "Do you want to (a)ccept, (e)dit, (r)egenerate, or (c)ancel? "
+        choice=$REPLY
+
+        case "$choice" in
+            a|A )
+                if git commit -m "$commit_message"; then
+                    echo "Changes committed successfully!"
+                    return 0
+                else
+                    echo "Commit failed. Please check your changes and try again."
+                    return 1
+                fi
+                ;;
+            e|E )
+                read_input "Enter your commit message: "
+                commit_message=$REPLY
+                if [ -n "$commit_message" ] && git commit -m "$commit_message"; then
+                    echo "Changes committed successfully with your message!"
+                    return 0
+                else
+                    echo "Commit failed. Please check your message and try again."
+                    return 1
+                fi
+                ;;
+            r|R )
+                echo "Regenerating commit message..."
+                commit_message=$(generate_commit_message)
+                ;;
+            c|C )
+                echo "Commit cancelled."
+                return 1
+                ;;
+            * )
+                echo "Invalid choice. Please try again."
+                ;;
+        esac
+    done
+}

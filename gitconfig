@@ -55,3 +55,5 @@
 [user]
 	email = ido.azaria@gmail.com
 	name = Ido Azaria
+[credential]
+	helper = manager

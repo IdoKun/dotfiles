@@ -86,10 +86,8 @@ if [ -e $LW_VENV ]; then
   RPROMPT+='[🐍 $VIRTUAL_ENV_PROMPT]'
 fi
 #export PYTHONPATH="/Users/thekunhome/code/IdoKun/data-challenges/04-Decision-Science:$PYTHONPATH"
-export GOOGLE_APPLICATION_CREDENTIALS="/Users/thekunhome/code/IdoKun/gcp/le-wagon-ds23021983-4919c49f7ae5.json"
 # Hook direnv but only if direnv is installed
 if (( $+commands[direnv] )); then eval "$(direnv hook zsh)"; fi
-export GOOGLE_APPLICATION_CREDENTIALS=/Users/thekunhome/Code/IdoKun/gcp/le-wagon-bootcamp-1014-6d370a9f44ca.json
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -107,7 +105,6 @@ if [ -f '/Users/thekunhome/google-cloud-sdk/completion.zsh.inc' ]; then . '/User
 
 export PATH="$HOME/google-cloud-sdk/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
-export GOOGLE_APPLICATION_CREDENTIALS=/Users/thekunhome/Code/IdoKun/gcp/le-wagon-bootcamp-475211-8588607da502.json
 
 
 # -----------------------------------------------------------------------------
@@ -190,3 +187,11 @@ Please generate a concise, one-line commit message for these changes."
 
 # Private env (not in this repo)
 [ -f "$HOME/.secrets" ] && source "$HOME/.secrets"
+
+# GCP credentials are deliberately NOT exported globally (2026-09-25).
+# A global GOOGLE_APPLICATION_CREDENTIALS makes every app on this Mac authenticate as
+# whichever project was exported last — it cost kun-parenting a confusing "Drive API not
+# enabled in project 311882168159" (Le Wagon's), and brain/scripts/tf.sh and
+# check-infra-drift.sh both exist partly to override it. Each project now carries its own
+# credential: an .env (kun-recipes) or a direnv .envrc. Le Wagon uses ADC via
+# `gcloud auth application-default login` under its own gcloud configuration.

@@ -60,7 +60,7 @@
     "notebook.diff.ignoreMetadata": true,
     "notebook.lineNumbers": "on",
     "notebook.markup.fontSize": 13,
-    "python.defaultInterpreterPath": "~/.lewagon/venvs/lewagon/bin/python",
+    "python.defaultInterpreterPath": "${userHome}/.lewagon/venvs/lewagon/bin/python",
     "python.formatting.provider": "yapf",
     "python.languageServer": "Pylance",
     "python.linting.enabled": false,

@@ -4,7 +4,9 @@ ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="robbyrussell"
 
 # Useful oh-my-zsh plugins for Le Wagon bootcamps
-plugins=(git gitfast last-working-dir common-aliases zsh-syntax-highlighting history-substring-search pyenv direnv)
+# `pyenv` dropped from this list 2026-09-25: the omni-app moved to uv, ~/.pyenv is gone,
+# and the omz plugin warns on every shell start when it finds the binary without shims.
+plugins=(git gitfast last-working-dir common-aliases zsh-syntax-highlighting history-substring-search direnv)
 
 # Add the omz ssh-agent plugin for WSL / Linux only (macOS handles this through Keychain in ~/.ssh/config)
 case "$(uname -s)" in

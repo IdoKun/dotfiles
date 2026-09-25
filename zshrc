@@ -28,9 +28,9 @@ export PATH="${HOME}/.rbenv/bin:${PATH}" # Needed for Linux/WSL
 type -a rbenv > /dev/null && eval "$(rbenv init -)"
 
 # Load pyenv (to manage your Python versions)
-# (we still run a pyenv based setup — not the uv venv)
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-type -a pyenv > /dev/null && eval "$(pyenv init -)" && eval "$(pyenv virtualenv-init - 2> /dev/null)" && RPROMPT+='[🐍 $(pyenv version-name)]'
+# Uncomment the next lines if you still run a pyenv based setup
+# export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+# type -a pyenv > /dev/null && eval "$(pyenv init -)" && eval "$(pyenv virtualenv-init - 2> /dev/null)" && RPROMPT+='[🐍 $(pyenv version-name)]'
 
 # Load nvm (to manage your node versions)
 export NVM_DIR="$HOME/.nvm"
@@ -77,9 +77,18 @@ export EDITOR=code
 
 # Set ipdb as the default Python debugger
 export PYTHONBREAKPOINT=ipdb.set_trace
+
+# Activate the Le Wagon Python venv and update the prompt
+LW_VENV="$HOME/.lewagon/venvs/lewagon"
+if [ -e $LW_VENV ]; then
+  export VIRTUAL_ENV_DISABLE_PROMPT=1
+  source $LW_VENV/bin/activate
+  RPROMPT+='[🐍 $VIRTUAL_ENV_PROMPT]'
+fi
 #export PYTHONPATH="/Users/thekunhome/code/IdoKun/data-challenges/04-Decision-Science:$PYTHONPATH"
 export GOOGLE_APPLICATION_CREDENTIALS="/Users/thekunhome/code/IdoKun/gcp/le-wagon-ds23021983-4919c49f7ae5.json"
-eval "$(direnv hook zsh)"
+# Hook direnv but only if direnv is installed
+if (( $+commands[direnv] )); then eval "$(direnv hook zsh)"; fi
 export GOOGLE_APPLICATION_CREDENTIALS=/Users/thekunhome/Code/IdoKun/gcp/le-wagon-bootcamp-1014-6d370a9f44ca.json
 
 eval "$(/opt/homebrew/bin/brew shellenv)"

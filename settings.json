@@ -66,9 +66,13 @@
     "python.linting.enabled": false,
     "python.linting.flake8Enabled": false,
     "python.linting.pylintEnabled": false,
-    "python.terminal.activateEnvironment": false,
+    "python.terminal.activateEnvironment": true,
     "ruby.lint": {
         "rubocop": true
+    },
+    "search.exclude": {
+      // Inherits all glob patterns from the `files.exclude` setting.
+      "**/.venv": true
     },
     "telemetry.telemetryLevel": "off",
     "window.restoreWindows": "none",
